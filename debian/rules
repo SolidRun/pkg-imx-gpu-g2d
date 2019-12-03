@@ -1,0 +1,32 @@
+#!/usr/bin/make -f
+
+# define destdir
+DESTDIR=$(CURDIR)/debian/tmp
+
+# HACK for build-services that can't download
+SOURCESDIRS=/usr/src/packages/SOURCES/ ~/
+
+NAME=imx-gpu-g2d-6.4.3.p0.0-aarch64
+MD5=38d161708c42bb01362b7ba7f91bb6b4
+
+%:
+	dh $@
+
+override_dh_auto_clean:
+	rm -rf $(NAME)
+	rm -fv $(NAME).bin
+
+override_dh_auto_configure:
+	find $(SOURCESDIRS) -maxdepth 1 -iname "$(NAME).bin" -exec cp -v {} ./ \; -quit || true
+	./fetch.sh $(NAME).bin $(MD5)
+	./$(NAME).bin --auto-accept
+
+override_dh_auto_install:
+	install -v -m644 -D $(NAME)/g2d/usr/lib/libg2d.so.1.5 $(DESTDIR)/usr/lib/$(DEB_HOST_MULTIARCH)/libg2d.so.1.5
+	ln -sv libg2d.so.1.5 $(DESTDIR)/usr/lib/$(DEB_HOST_MULTIARCH)/libg2d.so.1
+	ln -sv libg2d.so.1 $(DESTDIR)/usr/lib/$(DEB_HOST_MULTIARCH)/libg2d.so
+	install -v -m644 -D $(NAME)/g2d/usr/lib/libg2d-viv.so $(DESTDIR)/usr/lib/$(DEB_HOST_MULTIARCH)/libg2d-viv.so
+	install -v -m644 -D $(NAME)/g2d/usr/include/g2d.h $(DESTDIR)/usr/include/g2d.h
+	install -v -m644 -D $(NAME)/g2d/usr/include/g2dExt.h $(DESTDIR)/usr/include/g2dExt.h
+	mkdir -p $(DESTDIR)/opt
+	cp -rv $(NAME)/gpu-demos/opt/g2d_samples $(DESTDIR)/opt/

@@ -1,0 +1,43 @@
+Source: imx-gpu-g2d
+Priority: optional
+Maintainer: Josua Mayer <josua@solid-run.com>
+Build-Depends:
+ debhelper (>= 9),
+Standards-Version: 3.9.6
+Section: libs
+Vcs-Git: https://github.com/SolidRun/pkg-imx-gpu-g2d.git
+Vcs-Browser: https://github.com/SolidRun/pkg-imx-gpu-g2d
+
+Package: imx-gpu-g2d
+Section: libs
+Architecture: arm64
+Multi-Arch: same
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
+ imx-gpu-viv-fb | imx-gpu-viv-wl | imx-gpu-viv-x11,
+Provides:
+ libg2d1-5,
+Description: NXP G2D graphics library
+ Provides the implementation of the G2D graphics library by NXP.
+
+Package: imx-gpu-g2d-dev
+Section: libdevel
+Architecture: all
+Multi-Arch: foreign
+Depends:
+ ${misc:Depends},
+ imx-gpu-g2d (= ${binary:Version}),
+Provides:
+ libg2d-dev,
+Description: Development files for imx-gpu-g2d
+ Provides development libraries and headers for using libg2d.
+
+Package: imx-gpu-g2d-demos
+Section: extra
+Architecture: arm64
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
+Description: Demos for imx-gpu-g2d
+ Provides sample applications to showcase the G2D library.
